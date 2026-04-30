@@ -1,61 +1,53 @@
-# models.py
-def repo_obter_todos_livros():
-    return [
-        {"titulo": "O Silêncio dos Inocentes", "categoria": "Suspense"},
-        {"titulo": "O Iluminado", "categoria": "Suspense"},
-        {"titulo": "Sherlock Holmes: Um Estudo em Vermelho", "categoria": "Suspense"},
-        {"titulo": "Boneco de Neve", "categoria": "Suspense"},
-        {"titulo": "A Garota no Trem", "categoria": "Suspense"},
-        {"titulo": "O Chamado de Cthulhu", "categoria": "Horror"},
-        {"titulo": "A Cor que Caiu do Espaço", "categoria": "Horror"},
-        {"titulo": "It: A Coisa", "categoria": "Horror"},
-        {"titulo": "Drácula", "categoria": "Horror"},
-        {"titulo": "Frankenstein", "categoria": "Horror"},
-        {"titulo": "O Exorcista", "categoria": "Horror"},
-        {"titulo": "Psicose", "categoria": "Suspense"},
-        {"titulo": "O Vilarejo", "categoria": "Horror"},
-        {"titulo": "Orgulho e Preconceito", "categoria": "Romance"},
-        {"titulo": "Como Eu Era Antes de Você", "categoria": "Romance"},
-        {"titulo": "A Culpa é das Estrelas", "categoria": "Romance"},
-        {"titulo": "Dom Casmurro", "categoria": "Romance"},
-        {"titulo": "O Morro dos Ventos Uivantes", "categoria": "Romance"},
-        {"titulo": "Jane Eyre", "categoria": "Romance"},
-        {"titulo": "Amor & Gelato", "categoria": "Romance"},
-        {"titulo": "É Assim que Acaba", "categoria": "Romance"},
-        {"titulo": "Vermelho, Branco e Sangue Azul", "categoria": "Romance"},
-        {"titulo": "Razão e Sensibilidade", "categoria": "Romance"},
-        {"titulo": "Duna", "categoria": "Ficção Científica"},
-        {"titulo": "Neuromancer", "categoria": "Ficção Científica"},
-        {"titulo": "Fundação", "categoria": "Ficção Científica"},
-        {"titulo": "Androides Sonham com Ovelhas Elétricas?", "categoria": "Ficção Científica"},
-        {"titulo": "2001: Uma Odisseia no Espaço", "categoria": "Ficção Científica"},
-        {"titulo": "O Guia do Mochileiro das Galáxias", "categoria": "Ficção Científica"},
-        {"titulo": "O Hobbit", "categoria": "Fantasia"},
-        {"titulo": "Harry Potter e a Pedra Filosofal", "categoria": "Fantasia"},
-        {"titulo": "O Senhor dos Anéis: A Sociedade do Anel", "categoria": "Fantasia"},
-        {"titulo": "O Nome do Vento", "categoria": "Fantasia"},
-        {"titulo": "Game of Thrones", "categoria": "Fantasia"},
-        {"titulo": "Crônicas de Nárnia", "categoria": "Fantasia"},
-        {"titulo": "Percy Jackson e o Ladrão de Raios", "categoria": "Fantasia"},
-        {"titulo": "Código Limpo", "categoria": "Tecnologia"},
-        {"titulo": "Arquitetura Limpa", "categoria": "Tecnologia"},
-        {"titulo": "O Programador Pragmático", "categoria": "Tecnologia"},
-        {"titulo": "Design Patterns", "categoria": "Tecnologia"},
-        {"titulo": "Refatoração", "categoria": "Tecnologia"},
-        {"titulo": "Engenharia de Software de Moderno", "categoria": "Tecnologia"},
-        {"titulo": "Entendendo Algoritmos", "categoria": "Tecnologia"},
-        {"titulo": "Sapiens: Uma Breve História da Humanidade", "categoria": "História"},
-        {"titulo": "O Poder do Hábito", "categoria": "Autoajuda"},
-        {"titulo": "Pai Rico, Pai Pobre", "categoria": "Finanças"},
-        {"titulo": "A Arte da Guerra", "categoria": "Estratégia"},
-        {"titulo": "Medit Meditações", "categoria": "Filosofia"},
-        {"titulo": "1984", "categoria": "Distopia"},
-        {"titulo": "A Revolução dos Bichos", "categoria": "Distopia"},
-        {"titulo": "Fahrenheit 451", "categoria": "Distopia"}
-    ]
+from src.domain.repositorio import ILivroRepository
 
-def repo_obter_promocoes_ativas():
-    return [
-        {"evento": "Semana de Horror", "desconto": "20%", "mes": 4, "cor": "bg-red-900"},
-        {"evento": "Festival de Tecnologia", "desconto": "15%", "mes": 5, "cor": "bg-blue-900"}
-    ]
+class TxtLivroRepository(ILivroRepository):
+    def __init__(self, arquivo_livros="livros.txt", arquivo_promos="promocoes.txt"):
+        self.arquivo_livros = arquivo_livros
+        self.arquivo_promos = arquivo_promos
+
+    def obter_todos(self):
+        livros = []
+        try:
+            with open(self.arquivo_livros, "r", encoding="utf-8") as f:
+                for linha in f:
+                    if linha.strip():
+                        titulo, categoria = linha.strip().rsplit(",", 1)
+                        livros.append({"titulo": titulo, "categoria": categoria})
+        except FileNotFoundError:
+            print(f"Erro: Arquivo {self.arquivo_livros} não encontrado.")
+        return livros
+
+    def obter_promocoes(self):
+        promos = []
+        try:
+            with open(self.arquivo_promos, "r", encoding="utf-8") as f:
+                for linha in f:
+                    if linha.strip():
+                        # O formato no TXT é: Evento,Desconto,Mês,Cor
+                        evento, desconto, mes, cor = linha.strip().split(",")
+                        promos.append({
+                            "evento": evento,
+                            "desconto": desconto,
+                            "mes": int(mes), # Convertemos para inteiro para comparar com o mês atual
+                            "cor": cor
+                        })
+        except FileNotFoundError:
+            print(f"Erro: Arquivo {self.arquivo_promos} não encontrado.")
+        return promos
+
+    def obter_avaliacoes(self):
+        notas = []
+        try:
+            with open("avaliacao.txt", "r", encoding="utf-8") as f: 
+                for linha in f:
+                    if linha.strip():
+
+                        titulo, nota, texto = linha.strip().split(",", 2) 
+                        notas.append({
+                            "titulo": titulo.strip(), 
+                            "nota": nota.strip(), 
+                            "texto": texto.strip()
+                        })
+        except FileNotFoundError:
+            return []
+        return notas
