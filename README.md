@@ -1,56 +1,60 @@
-# Arquitetura Multicamadas
 
-## Arquitetura do Projeto
+PROJETO: LIVRARIA MACKENZIE - ARQUITETURA MULTICAMADAS
+=
 
-Apresentação (View)
-Templates HTML responsáveis pela interface com o usuário.
+1. ARQUITETURA DO PROJETO
+   
+-------------------------
+O projeto segue os princípios da Clean Architecture, garantindo que a lógica de 
+negócio esteja separada da interface e do armazenamento de dados.
 
-Controlador (Controller)
-Responsável por orquestrar as requisições e preparar os dados para a View.
+[Apresentação / View]
+- Local: src/presentation/templates
+- O que faz: Contém os ficheiros HTML e CSS (Tailwind) que o utilizador vê.
 
-Aplicação (Service)
-Camada onde ficam as regras de negócio (ex: filtros e lógica de datas para banners).
+[Controlador / Controller]
+- Local: src/presentation/controller.py
+- O que faz: Recebe os dados da rota e prepara-os para serem exibidos na View.
 
-Persistência (Infrastructure / Repository)
-Responsável pelo acesso aos dados e comunicação com a “base de dados”.
+[Aplicação / Service]
+- Local: src/app/service.py
+- O que faz: Contém as regras de negócio. Ex: calcular qual banner exibir 
+  com base no mês ou filtrar livros com as suas respetivas notas.
 
-Entidades / Rotas
-Ponto de entrada da aplicação Flask, gerenciando o ciclo de vida das requisições.
+[Persistência / Infrastructure]
+- Local: src/infrastructure/persist.py
+- O que faz: Lê e escreve nos ficheiros de texto (livros.txt, promocao.txt, avaliacao.txt).
 
-## Feature Nova
+[Domínio / Entidades]
+- Local: src/domain/
+- O que faz: Define os modelos de dados e as interfaces (contratos) do sistema.
 
-Marketing Sazonal (Banner Dinâmico)
-Implementação de uma regra de negócio na camada de aplicação que exibe banners promocionais com base no mês atual do sistema.
 
-# Como Executar o Projeto
+2. FEATURE IMPLEMENTADA
+   
+-------------------------
+- Múltiplas Avaliações: Suporte para exibir várias críticas e notas de diferentes 
+  leitores para o mesmo livro (leitura de ficheiro TXT com tratamento de vírgulas).
 
-1. Criar o ambiente virtual
+
+3. COMO EXECUTAR O PROJETO
+   
+-------------------------
+Passo 1: Criar o ambiente virtual
 ```
-   python -m venv venv
+    python -m venv venv
 ```
-2. Ativar o ambiente (Windows)
+Passo 2: Ativar o ambiente (Windows)
 ```
-   .\venv\Scripts\activate
+    .\venv\Scripts\activate
 ```
-3. Instalar dependências
+Passo 3: Instalar as dependências
 ```
-   pip install -r requirements.txt
+    pip install flask
 ```
-4. Rodar a aplicação
+Passo 4: Rodar a aplicação
 ```
-   python app.py
+    python app.py
 ```
-Acesse no navegador:
-[http://127.0.0.1:5000](http://127.0.0.1:5000)
+Acesse no navegador: http://127.0.0.1:5000
 
-## Executar Testes BDD
-
-```
-behave
-```
-
-# Observações
-
-* Estrutura organizada em múltiplas camadas para melhor manutenção e escalabilidade.
-* Separação clara de responsabilidades entre regras de negócio, controle e acesso a dados.
-* Nova feature de marketing adicionada sem impacto direto nas demais camadas, seguindo boas práticas de arquitetura.
